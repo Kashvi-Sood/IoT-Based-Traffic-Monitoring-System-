@@ -30,8 +30,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     (s) =>
       s.latestReading &&
       (s.latestReading.temperature! > 30 ||
-        s.latestReading.emissions! > 150 ||
-        s.latestReading.noise! > 85)
+        s.latestReading.emissions! > 100 ||
+        s.latestReading.noise! > 63)
   );
 
   console.log("Problematic stations:", problematicStations.map((s) => s.info.name));
@@ -87,22 +87,22 @@ Output as **valid JSON only**, no Markdown. Format:
           threshold: 30,
           suggestion: "Deploy cooling systems or improve ventilation.",
         };
-      if (s.latestReading?.emissions! > 150)
+      if (s.latestReading?.emissions! > 100)
         return {
           stationName: s.info.name,
           area: s.info.area,
           parameter: "PM 2.5 Emissions",
           value: s.latestReading?.emissions!,
-          threshold: 150,
+          threshold: 100,
           suggestion: "Implement carbon capture or reduce operational hours.",
         };
-      if (s.latestReading?.noise! > 85)
+      if (s.latestReading?.noise! > 63)
         return {
           stationName: s.info.name,
           area: s.info.area,
           parameter: "Noise",
           value: s.latestReading?.noise!,
-          threshold: 85,
+          threshold: 63,
           suggestion: "Install noise barriers or schedule loud activities off-peak.",
         };
       return null;

@@ -94,23 +94,23 @@ const AiAssistantChat: React.FC<AiAssistantChatProps> = ({ stations }) => {
             threshold: 30,
             suggestion: "Deploy cooling systems or improve ventilation.",
           };
-        if (s.latestReading?.emissions! > 150)
+        if (s.latestReading?.emissions! > 100)
           return {
             stationName: s.info.name,
             area: s.info.area,
             parameter: "PM 2.5 Emissions",
             value: s.latestReading?.emissions!,
-            threshold: 150,
+            threshold: 100,
             suggestion:
               "Implement carbon capture technologies or reduce operational hours.",
           };
-        if (s.latestReading?.noise! > 85)
+        if (s.latestReading?.noise! > 63)
           return {
             stationName: s.info.name,
             area: s.info.area,
             parameter: "Noise",
             value: s.latestReading?.noise!,
-            threshold: 85,
+            threshold: 63,
             suggestion:
               "Install noise barriers or schedule loud activities during off-peak hours.",
           };
