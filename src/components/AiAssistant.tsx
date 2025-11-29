@@ -30,8 +30,6 @@ interface Suggestion {
   suggestion: string;
 }
 
-const apiKey = import.meta.env.VITE_MISTRAL_API_KEY;
-
 interface AiAssistantChatProps {
   stations: Station[];
 }
