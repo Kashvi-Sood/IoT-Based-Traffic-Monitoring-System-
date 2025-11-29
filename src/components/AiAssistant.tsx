@@ -57,6 +57,7 @@ const AiAssistantChat: React.FC<AiAssistantChatProps> = ({ stations }) => {
     if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
     const apiData = await response.json();
+    console.log("Raw API response:", apiData);
 
     // Extract the content string from the first choice
     const content = apiData.choices?.[0]?.message?.content || "";
@@ -65,10 +66,13 @@ const AiAssistantChat: React.FC<AiAssistantChatProps> = ({ stations }) => {
 
     try {
       finalSuggestions = JSON.parse(cleanContent);
+      console.log("Parsed AI suggestions:", finalSuggestions);
     } catch (parseError) {
+      console.error("JSON parsing failed, using fallback.", parseError);
       finalSuggestions = [];
     }
   } catch (error) {
+    console.error("Error fetching AI suggestions, using fallback:", error);
     finalSuggestions = [];
   }
 
