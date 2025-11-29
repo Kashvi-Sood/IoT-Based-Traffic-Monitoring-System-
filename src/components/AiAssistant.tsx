@@ -48,7 +48,6 @@ const AiAssistantChat: React.FC<AiAssistantChatProps> = ({ stations }) => {
   let finalSuggestions: Suggestion[] = [];
 
   try {
-    // Call serverless function
     const response = await fetch("/api/analyzeStations", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -57,14 +56,28 @@ const AiAssistantChat: React.FC<AiAssistantChatProps> = ({ stations }) => {
 
     if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
-    const apiSuggestions: Suggestion[] = await response.json();
-    console.log("API suggestions received:", apiSuggestions);
+    const apiData = await response.json();
+    console.log("Raw API response:", apiData);
 
-    finalSuggestions = apiSuggestions.length > 0 ? apiSuggestions : [];
+    // Extract the content string from the first choice
+    const content = apiData.choices?.[0]?.message?.content || "";
+    // Remove any ```json ... ``` formatting
+    const cleanContent = content.replace(/```json|```/g, "").trim();
+
+    try {
+      finalSuggestions = JSON.parse(cleanContent);
+      console.log("Parsed AI suggestions:", finalSuggestions);
+    } catch (parseError) {
+      console.error("JSON parsing failed, using fallback.", parseError);
+      finalSuggestions = [];
+    }
   } catch (error) {
     console.error("Error fetching AI suggestions, using fallback:", error);
+    finalSuggestions = [];
+  }
 
-    // Fallback: generate mock suggestions
+  // Fallback: if API fails or no suggestions returned
+  if (finalSuggestions.length === 0) {
     finalSuggestions = stations
       .map((s) => {
         if (s.latestReading?.temperature! > 30)
@@ -101,10 +114,10 @@ const AiAssistantChat: React.FC<AiAssistantChatProps> = ({ stations }) => {
       .filter(Boolean) as Suggestion[];
   }
 
-  console.log("Final suggestions to render:", finalSuggestions);
-  setSuggestions(finalSuggestions); // ✅ ensure UI gets updated
+  setSuggestions(finalSuggestions);
   setLoading(false);
 };
+
 
   return (
     <>
