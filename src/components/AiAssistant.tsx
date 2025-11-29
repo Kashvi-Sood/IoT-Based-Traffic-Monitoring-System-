@@ -45,9 +45,8 @@ const AiAssistantChat: React.FC<AiAssistantChatProps> = ({ stations }) => {
   setLoading(true);
   setSuggestions([]);
 
-  let finalSuggestions: Suggestion[] = [];
-
   try {
+    // Call serverless function
     const response = await fetch("/api/analyzeStations", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -56,29 +55,15 @@ const AiAssistantChat: React.FC<AiAssistantChatProps> = ({ stations }) => {
 
     if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
-    const apiData = await response.json();
-    console.log("Raw API response:", apiData);
+    const suggestions: Suggestion[] = await response.json();
 
-    // Extract the content string from the first choice
-    const content = apiData.choices?.[0]?.message?.content || "";
-    // Remove any ```json ... ``` formatting
-    const cleanContent = content.replace(/```json|```/g, "").trim();
-
-    try {
-      finalSuggestions = JSON.parse(cleanContent);
-      console.log("Parsed AI suggestions:", finalSuggestions);
-    } catch (parseError) {
-      console.error("JSON parsing failed, using fallback.", parseError);
-      finalSuggestions = [];
+    if (suggestions.length > 0) {
+      setSuggestions(suggestions);
     }
+    // No console logs needed
   } catch (error) {
-    console.error("Error fetching AI suggestions, using fallback:", error);
-    finalSuggestions = [];
-  }
-
-  // Fallback: if API fails or no suggestions returned
-  if (finalSuggestions.length === 0) {
-    finalSuggestions = stations
+    // Fallback: generate mock suggestions
+    const mockSuggestions: Suggestion[] = stations
       .map((s) => {
         if (s.latestReading?.temperature! > 30)
           return {
@@ -112,11 +97,13 @@ const AiAssistantChat: React.FC<AiAssistantChatProps> = ({ stations }) => {
         return null;
       })
       .filter(Boolean) as Suggestion[];
+
+    setSuggestions(mockSuggestions);
   }
 
-  setSuggestions(finalSuggestions);
   setLoading(false);
 };
+
 
 
   return (
