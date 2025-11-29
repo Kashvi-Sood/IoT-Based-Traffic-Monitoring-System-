@@ -1,14 +1,12 @@
-
 // src/components/Map.tsx
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { useEffect } from "react";
 import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
 import iconUrl from "leaflet/dist/images/marker-icon.png";
 import shadowUrl from "leaflet/dist/images/marker-shadow.png";
-// leaflet-default-icon-issue-solution
 
+// Fix leaflet image issues
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 
 L.Icon.Default.mergeOptions({
@@ -32,38 +30,22 @@ interface Station {
   } | null;
 }
 
-interface MapUpdaterProps {
-  stations: Station[];
-}
-
-const MapUpdater = ({ stations }: MapUpdaterProps) => {
-  const map = useMap();
-
-  useEffect(() => {
-    if (stations.length > 0) {
-      const bounds = L.latLngBounds(
-        stations.map((s) => [s.info.latitude, s.info.longitude])
-      );
-      map.fitBounds(bounds, { padding: [50, 50] });
-    }
-  }, [stations, map]);
-
-  return null;
-};
-
 const Map = ({ stations }: { stations: Station[] }) => {
-  const position: [number, number] = [20.5937, 78.9629]; // Default center of India
+  // Initial static center – used once only
+  const initialCenter: [number, number] = [32.73, 74.86]; // Jammu center
 
   return (
     <MapContainer
-      center={position}
-      zoom={5} // Initial zoom to show a broader area
+      center={initialCenter}
+      zoom={11}   // City-level zoom
       style={{ height: "100%", width: "100%" }}
+      scrollWheelZoom={true}
     >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
+
       {stations.map((station) => (
         <Marker
           key={station.id}
@@ -71,18 +53,21 @@ const Map = ({ stations }: { stations: Station[] }) => {
         >
           <Popup>
             <h3>{station.info.name}</h3>
+
             {station.latestReading ? (
               <div>
-                <p>
-                  <strong>Heat:</strong> {station.latestReading.temperature}°C
-                </p>
-                <p>
-                  <strong>Emissions:</strong> {station.latestReading.emissions} ppm
-                </p>
-                <p>
-                  <strong>Noise:</strong> {station.latestReading.noise} dB
-                </p>
-                <small>Last updated: {new Date(station.latestReading.datetime).toLocaleString()}</small>
+                <p><strong>Heat:</strong> {station.latestReading.temperature}°C</p>
+                <p><strong>Emissions:</strong> {station.latestReading.emissions} ppm</p>
+                <p><strong>Noise:</strong> {station.latestReading.noise} dB</p>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                  <small>Latitude: {station.info.latitude}</small>
+                  <small>Longitude: {station.info.longitude}</small>
+                  <small>
+                    Last updated:{" "}
+                    {new Date(station.latestReading.datetime).toLocaleString()}
+                  </small>
+                </div>
               </div>
             ) : (
               <p>No reading available</p>
@@ -90,7 +75,6 @@ const Map = ({ stations }: { stations: Station[] }) => {
           </Popup>
         </Marker>
       ))}
-      <MapUpdater stations={stations} />
     </MapContainer>
   );
 };

@@ -19,7 +19,7 @@ interface Station {
   latestReading: SensorReading | null;
 }
 
-const NOISE_THRESHOLD = 55; // Change to your desired threshold
+const NOISE_THRESHOLD = 63; // Change to your desired threshold
 
 const RealtimeData = () => {
   const [stations, setStations] = useState<Station[]>([]);
