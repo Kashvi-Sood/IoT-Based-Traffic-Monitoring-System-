@@ -42,88 +42,77 @@ const AiAssistantChat: React.FC<AiAssistantChatProps> = ({ stations }) => {
   const toggleChat = () => setChatOpen((prev) => !prev);
 
   const analyzeStationsWithAI = async (stations: Station[]) => {
-  setLoading(true);
-  setSuggestions([]);
+    setLoading(true);
+    setSuggestions([]);
 
-  let finalSuggestions: Suggestion[] = [];
+    let finalSuggestions: Suggestion[] = [];
 
-  try {
-    const response = await fetch("/api/analyzeStations", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ stations }),
-    });
+    try {
+      const response = await fetch("/api/analyzeStations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ stations }),
+      });
 
-    if (!response.ok) throw new Error(`Server error: ${response.status}`);
+      if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
-    const apiData = await response.json();
-    console.log("Raw API response:");
+      const apiData = await response.json();
 
-    // If the API already returned an array of suggestions
-    if (Array.isArray(apiData) && apiData[0]?.stationName) {
-      finalSuggestions = apiData as Suggestion[];
-      console.log("Using API response as suggestions:");
-    } else {
-      // Otherwise, parse AI content like before
-      const content = apiData.choices?.[0]?.message?.content || "";
-      const cleanContent = content.replace(/```json|```/g, "").trim();
-
-      try {
-        finalSuggestions = JSON.parse(cleanContent);
-        console.log("Parsed AI suggestions:");
-      } catch (parseError) {
-        console.error("JSON parsing failed, using fallback.");
-        finalSuggestions = [];
+      if (Array.isArray(apiData) && apiData[0]?.stationName) {
+        finalSuggestions = apiData as Suggestion[];
+      } else {
+        const content = apiData.choices?.[0]?.message?.content || "";
+        const cleanContent = content.replace(/```json|```/g, "").trim();
+        try {
+          finalSuggestions = JSON.parse(cleanContent);
+        } catch {
+          finalSuggestions = [];
+        }
       }
+    } catch {
+      finalSuggestions = [];
     }
-  } catch (error) {
-    console.error("Error fetching AI suggestions, using fallback:");
-    finalSuggestions = [];
-  }
 
-  // Fallback: if API fails or no suggestions returned
-  if (finalSuggestions.length === 0) {
-    finalSuggestions = stations
-      .map((s) => {
-        if (s.latestReading?.temperature! > 30)
-          return {
-            stationName: s.info.name,
-            area: s.info.area,
-            parameter: "Temperature",
-            value: s.latestReading?.temperature!,
-            threshold: 30,
-            suggestion: "Deploy cooling systems or improve ventilation.",
-          };
-        if (s.latestReading?.emissions! > 100)
-          return {
-            stationName: s.info.name,
-            area: s.info.area,
-            parameter: "PM 2.5 Emissions",
-            value: s.latestReading?.emissions!,
-            threshold: 100,
-            suggestion:
-              "Implement carbon capture technologies or reduce operational hours.",
-          };
-        if (s.latestReading?.noise! > 63)
-          return {
-            stationName: s.info.name,
-            area: s.info.area,
-            parameter: "Noise",
-            value: s.latestReading?.noise!,
-            threshold: 63,
-            suggestion:
-              "Install noise barriers or schedule loud activities during off-peak hours.",
-          };
-        return null;
-      })
-      .filter(Boolean) as Suggestion[];
-  }
+    if (finalSuggestions.length === 0) {
+      finalSuggestions = stations
+        .map((s) => {
+          if (s.latestReading?.temperature! > 30)
+            return {
+              stationName: s.info.name,
+              area: s.info.area,
+              parameter: "Temperature",
+              value: s.latestReading?.temperature!,
+              threshold: 30,
+              suggestion: "Deploy cooling systems or improve ventilation.",
+            };
+          if (s.latestReading?.emissions! > 150)
+            return {
+              stationName: s.info.name,
+              area: s.info.area,
+              parameter: "PM 2.5 Emissions",
+              value: s.latestReading?.emissions!,
+              threshold: 150,
+              suggestion:
+                "Implement carbon capture technologies or reduce operational hours.",
+            };
+          if (s.latestReading?.noise! > 85)
+            return {
+              stationName: s.info.name,
+              area: s.info.area,
+              parameter: "Noise",
+              value: s.latestReading?.noise!,
+              threshold: 85,
+              suggestion:
+                "Install noise barriers or schedule loud activities during off-peak hours.",
+            };
+          return null;
+        })
+        .filter(Boolean) as Suggestion[];
+    }
 
-  setSuggestions(finalSuggestions);
-  setLoading(false);
-};
-
-
+    setSuggestions(finalSuggestions);
+    setLoading(false);
+  };
 
   return (
     <>
@@ -137,8 +126,9 @@ const AiAssistantChat: React.FC<AiAssistantChatProps> = ({ stations }) => {
             bottom: 24,
             right: 24,
             borderRadius: "50px",
-            backgroundColor: "#2ecc71",
-            "&:hover": { backgroundColor: "#27ae60" },
+            backgroundColor: "var(--accent)",
+            color: "white",
+            "&:hover": { backgroundColor: "var(--accent-light)" },
             zIndex: 1000,
           }}
         >
@@ -150,19 +140,20 @@ const AiAssistantChat: React.FC<AiAssistantChatProps> = ({ stations }) => {
       {chatOpen && (
         <Box
           sx={{
-    position: "fixed",
-    bottom: 0,
-    right: 24,
-    width: suggestions.length > 0 ? 480 : 360, // wider if we have responses
-    maxHeight: suggestions.length > 0 ? "100vh" : "70vh", // taller with responses
-    bgcolor: "#1f1f1f",
-    borderRadius: "12px 12px 0 0",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
-    display: "flex",
-    flexDirection: "column",
-    zIndex: 1000,
-    transition: "all 0.3s ease-in-out", // smooth resize
-  }}
+            position: "fixed",
+            bottom: 0,
+            right: 24,
+            width: suggestions.length > 0 ? 480 : 360,
+            maxHeight: suggestions.length > 0 ? "100vh" : "70vh",
+            bgcolor: "var(--bg-surface)",
+            borderRadius: "12px 12px 0 0",
+            border: "1px solid var(--border-soft)",
+            boxShadow: "var(--shadow-mid)",
+            display: "flex",
+            flexDirection: "column",
+            zIndex: 1000,
+            transition: "all 0.3s ease-in-out",
+          }}
         >
           {/* Chat Header */}
           <Box
@@ -171,14 +162,16 @@ const AiAssistantChat: React.FC<AiAssistantChatProps> = ({ stations }) => {
               justifyContent: "space-between",
               alignItems: "center",
               p: 2,
-              borderBottom: "1px solid #333",
+              borderBottom: "1px solid var(--border-soft)",
+              bgcolor: "var(--bg-surface-alt)",
             }}
           >
-            <Typography sx={{ fontWeight: "bold", color: "#2ecc71" }}>
+            <Typography sx={{ fontWeight: "bold", color: "var(--accent)" }}>
               AI Assistant
             </Typography>
+
             <IconButton size="small" onClick={toggleChat}>
-              <CloseIcon sx={{ color: "#fff" }} />
+              <CloseIcon sx={{ color: "var(--text-primary)" }} />
             </IconButton>
           </Box>
 
@@ -188,11 +181,11 @@ const AiAssistantChat: React.FC<AiAssistantChatProps> = ({ stations }) => {
               p: 2,
               overflowY: "auto",
               flexGrow: 1,
-              color: "#fff",
+              color: "var(--text-primary)",
             }}
           >
             {suggestions.length === 0 && !loading && (
-              <Typography sx={{ color: "#ccc" }}>
+              <Typography sx={{ color: "var(--text-secondary)" }}>
                 Click "Analyze" to get mitigation strategies and suggestions.
               </Typography>
             )}
@@ -205,11 +198,14 @@ const AiAssistantChat: React.FC<AiAssistantChatProps> = ({ stations }) => {
 
             {suggestions.length > 0 &&
               Object.entries(
-                suggestions.reduce((acc: Record<string, Suggestion[]>, curr) => {
-                  if (!acc[curr.stationName]) acc[curr.stationName] = [];
-                  acc[curr.stationName].push(curr);
-                  return acc;
-                }, {})
+                suggestions.reduce(
+                  (acc: Record<string, Suggestion[]>, curr) => {
+                    if (!acc[curr.stationName]) acc[curr.stationName] = [];
+                    acc[curr.stationName].push(curr);
+                    return acc;
+                  },
+                  {}
+                )
               ).map(([stationName, stationSuggestions]) => {
                 const area = stationSuggestions[0]?.area || "";
                 return (
@@ -217,12 +213,19 @@ const AiAssistantChat: React.FC<AiAssistantChatProps> = ({ stations }) => {
                     key={stationName}
                     sx={{
                       mt: 2,
-                      p: 1,
-                      backgroundColor: "#2a2a2a",
-                      borderRadius: "8px",
+                      p: 1.5,
+                      backgroundColor: "var(--bg-surface-alt)",
+                      borderRadius: "10px",
+                      border: "1px solid var(--border-soft)",
                     }}
                   >
-                    <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        fontWeight: "bold",
+                        color: "var(--text-primary)",
+                      }}
+                    >
                       {stationName} {area && `- ${area}`}
                     </Typography>
 
@@ -232,7 +235,8 @@ const AiAssistantChat: React.FC<AiAssistantChatProps> = ({ stations }) => {
                           <strong>Parameter:</strong> {s.parameter}
                         </Typography>
                         <Typography>
-                          <strong>Value:</strong> {s.value} (Threshold: {s.threshold})
+                          <strong>Value:</strong> {s.value} (Threshold:{" "}
+                          {s.threshold})
                         </Typography>
                         <Typography>
                           <strong>Suggestion:</strong> {s.suggestion}
@@ -245,18 +249,29 @@ const AiAssistantChat: React.FC<AiAssistantChatProps> = ({ stations }) => {
           </Box>
 
           {/* Analyze Button */}
-          <Box sx={{ p: 2, borderTop: "1px solid #333" }}>
+          <Box
+            sx={{
+              p: 2,
+              borderTop: "1px solid var(--border-soft)",
+              bgcolor: "var(--bg-surface-alt)",
+            }}
+          >
             <Button
               variant="contained"
               fullWidth
               onClick={() => analyzeStationsWithAI(stations)}
               disabled={loading}
               sx={{
-                backgroundColor: "#2ecc71",
-                "&:hover": { backgroundColor: "#27ae60" },
+                backgroundColor: "var(--accent)",
+                "&:hover": { backgroundColor: "var(--accent-light)" },
+                color: "white",
               }}
             >
-              {loading ? <CircularProgress size={24} color="inherit" /> : "Analyze"}
+              {loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Analyze"
+              )}
             </Button>
           </Box>
         </Box>

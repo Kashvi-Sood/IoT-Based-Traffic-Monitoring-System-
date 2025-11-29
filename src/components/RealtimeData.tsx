@@ -187,7 +187,7 @@ const RealtimeData = () => {
                         <span>{station.latestReading.noise} dB</span>
                       </p>
                       {avgNoise > NOISE_THRESHOLD && (
-                        <p style={{ color: "#FFFF8F", fontWeight: "bold" }}>
+                        <p style={{ color: "#28a1ceff", fontWeight: "bold" }}>
                            Warning! High Levels of Noise Detected.
                         </p>
                       )}

@@ -1,12 +1,42 @@
+/* ================================
+   LIGHT CLEAN DASHBOARD THEME
+================================= */
+:root {
+  --bg-main: #f5f8ff;           /* unified soft grey background */
+  --bg-surface: #ffffff;        /* white card */
+  --bg-surface-alt: #f0f3fa;
+
+  --text-primary: #1a1c25;
+  --text-secondary: #637082;
+  --text-muted: #9aa3b2;
+
+  --accent: #2d8cff;
+  --accent-light: #68afff;
+
+  --border-soft: #e2e6ef;
+  --border-strong: #cdd4e1;
+
+  --shadow-low: 0 2px 6px rgba(0,0,0,0.07);
+  --shadow-mid: 0 4px 12px rgba(0,0,0,0.10);
+
+  --radius-card: 14px;
+  --radius-soft: 10px;
+  --radius-button: 8px;
+}
+
+/* ================================
+   GLOBAL RESET + BACKGROUND
+================================= */
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #121212;
-  color: #EAEAEA;
 }
 
 #root {
@@ -15,44 +45,54 @@ body {
   align-items: center;
   min-height: 100vh;
   padding: 0.5rem;
+  background-color: var(--bg-main);
 }
 
+/* ================================
+   REALTIME DATA
+================================= */
 
-/* src/styles/RealtimeData.css */
 .realtime-container {
   display: flex;
-  height: max-content;
-  width:100%;
-  background-color: #1a1a1a;
-  color: #ffffff;
+  width: 100%;
+  background-color: var(--bg-main);
+  color: var(--text-primary);
 }
 
 .map-pane {
   flex: 1;
   height: 100vh;
-  top: 0;
+  background-color: var(--bg-main);
 }
 
 .data-pane {
   flex: 1;
   padding: 1rem;
   padding-top: 0;
-
+  background-color: var(--bg-main);
 }
 
 .selectors {
   display: flex;
   gap: 1rem;
-
 }
 
 .selectors select {
   padding: 0.8rem;
-  border-radius: 8px;
-  border: 1px solid #444;
-  background-color: #2a2a2a;
-  color: #ffffff;
+  border-radius: var(--radius-soft);
+  border: 1px solid var(--border-soft);
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  transition: 0.25s;
 }
+
+.selectors select:hover {
+  border-color: var(--accent);
+}
+
+/* ================================
+   STATIONS GRID + CARDS
+================================= */
 
 .stations-grid {
   display: grid;
@@ -62,31 +102,33 @@ body {
 }
 
 .station-card {
-  background-color: #2a2a2a;
-  border-radius: 12px;
+  background-color: var(--bg-surface);
+  border-radius: var(--radius-card);
   padding: 1.5rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-low);
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .station-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-mid);
+  border-color: var(--accent-light);
 }
 
 .station-card h3 {
-  margin-top: 0;
-  margin-bottom:0;
-  color: #2ecc71;
+  margin: 0;
+  color: var(--accent);
   font-size: 1.25rem;
 }
 
 .station-card p {
   margin: 0.5rem 0;
+  color: var(--text-secondary);
 }
 
 .station-card strong {
-  color: #a9a9a9;
+  color: var(--text-primary);
 }
 
 .sensor-reading {
@@ -101,40 +143,33 @@ body {
   gap: 8px;
 }
 
-/* .station-card.critical {
-  border-left: 5px solid #e74c3c;
-}
+/* ================================
+   AUTH SCREENS
+================================= */
 
-.station-card.warning {
-  border-left: 5px solid #f39c12;
-} */
-
-
-
-
-/* src/Auth.css */
 .auth-container {
   display: flex;
   justify-content: center;
   align-items: start;
   height: 100vh;
   padding: 20px;
+  background-color: var(--bg-main);
 }
 
 .auth-form {
-  background: rgba(44, 44, 44, 0.8);
+  background: var(--bg-surface);
   padding: 40px;
-  border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-mid);
   width: 100%;
   max-width: 400px;
   text-align: center;
-  backdrop-filter: blur(8px);
+  border: 1px solid var(--border-soft);
 }
 
 .auth-form h2 {
   margin-bottom: 25px;
-  color: #2ecc71;
+  color: var(--accent);
   font-size: 2rem;
 }
 
@@ -146,157 +181,135 @@ body {
 .auth-form label {
   display: block;
   margin-bottom: 8px;
-  color: #b0b0b0;
-  font-size: 0.9rem;
+  color: var(--text-secondary);
 }
 
 .auth-form input {
   width: 100%;
   padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #555;
-  background-color: #333;
-  color: #e0e0e0;
-  font-size: 1rem;
+  border-radius: var(--radius-soft);
+  border: 1px solid var(--border-soft);
+  background-color: var(--bg-surface-alt);
+  color: var(--text-primary);
 }
 
 .auth-form button {
   width: 100%;
   padding: 12px;
   border: none;
-  border-radius: 8px;
-  background-color: #2ecc71;
+  border-radius: var(--radius-button);
+  background-color: var(--accent);
   color: white;
-  font-size: 1rem;
   font-weight: 700;
-  cursor: pointer;
-  margin-top: 10px;
 }
 
 .auth-form button:hover {
-  background-color: #27ae60;
+  background-color: var(--accent-light);
 }
 
 .auth-form .error-message {
-  color: #e74c3c;
-  margin-top: 15px;
+  color: #ff4d6d;
 }
 
 .auth-form .toggle-auth {
   margin-top: 20px;
-  color: #b0b0b0;
+  color: var(--text-secondary);
 }
 
 .auth-form .toggle-auth button {
   background: none;
   border: none;
-  color: #2ecc71;
+  color: var(--accent);
   cursor: pointer;
   font-size: 1rem;
-  padding: 0;
-  margin-left: 5px;
 }
 
 .auth-form .toggle-auth button:hover {
   text-decoration: underline;
 }
 
-.auth-form .authswitchlink {
-  text-decoration: none;
-  color: white;
-}
-
-
-/* src/styles/App.css */
-body {
-  background-color: #1a1a1a;
-  color: #f0f0f0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  margin: 0;
-}
+/* ================================
+   APP HEADER
+================================= */
 
 .App {
   text-align: center;
-  width:100%
+  width: 100%;
+  background-color: var(--bg-main);
 }
 
 .App-header {
-  background-color: transparent;
+  background-color: var(--bg-main);
   padding-bottom: 1rem;
-  box-shadow: none;
-  margin-top:none;
-  padding-top:none ;
-  border-bottom: 1px solid #444;
+  border-bottom: 1px solid var(--border-soft);
 }
 
 .App-header h1 {
   margin: 0;
   font-weight: 600;
-  color: #2ecc71; /* Accent color */
+  color: var(--accent);
 }
 
 .App-description {
-  margin: 0.5rem 0 0;
+  margin: 0.5rem auto 0;
   font-size: 1rem;
-  color: #ccc;
-  width:60%;
-  margin-left: auto;
-  margin-right: auto;
+  color: var(--text-secondary);
+  width: 60%;
 }
 
-main {
-  padding: 0;
-}
+/* ================================
+   DEVICE CARD
+================================= */
 
 .device-card {
-  background-color: #2a2a2a;
-  border: 1px solid #444;
-  border-radius: 12px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-card);
   padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-low);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  text-align: left;
-  font-size: 1rem;
 }
 
 .device-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-mid);
+  border-color: var(--accent-light);
 }
 
 .device-card h3 {
-    margin-top: 0;
-    margin-bottom: 0.75rem;
-    font-size: 1.25rem;
-    color: #fff;
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+  color: var(--text-primary);
 }
 
 .device-card p {
-    margin: 0.5rem 0;
-    color: #ccc;
+  margin: 0.5rem 0;
+  color: var(--text-secondary);
 }
+
+/* ================================
+   LOGOUT BUTTON
+================================= */
 
 .logout-button {
   position: absolute;
   top: 20px;
   right: 20px;
-  background-color: #2ecc71;
-  color: black;
+  background-color: var(--accent);
+  color: rgb(255, 255, 255);
   border: none;
   padding: 10px 20px;
-  border-radius: 5px;
+  border-radius: var(--radius-button);
   cursor: pointer;
   font-size: 1rem;
-  transition: all 0.2s ease-in-out;
+  transition: 0.2s ease-in-out;
 }
 
-/* Hover effect */
 .logout-button:hover {
-  background-color: #27ae60;
-  color: white;
+  background-color: var(--accent-light);
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .logout-button {
     top: 15px;
@@ -315,19 +328,18 @@ main {
   }
 }
 
+/* ================================
+   GAUGES
+================================= */
 
-/* ------------------------------
-   Card wrapper for each station
---------------------------------*/
 .station-gauge-wrapper {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 14px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-card);
   padding: 18px;
   margin: 15px 0;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-  backdrop-filter: blur(6px);
-  color: white;
+  box-shadow: var(--shadow-low);
+  color: var(--text-primary);
 }
 
 .station-gauge-wrapper h3 {
@@ -335,9 +347,6 @@ main {
   text-align: center;
 }
 
-/* ------------------------------
-   Gauges Row (3 in one line)
---------------------------------*/
 .gauge-row {
   display: flex;
   justify-content: space-between;
@@ -345,7 +354,6 @@ main {
   flex-wrap: nowrap;
 }
 
-/* If the screen is too small, wrap */
 @media (max-width: 900px) {
   .gauge-row {
     flex-wrap: wrap;
@@ -353,22 +361,16 @@ main {
   }
 }
 
-/* ------------------------------
-   Individual Gauge Card
---------------------------------*/
 .gauge-card {
-  width: 155px; /* smaller dial */
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 12px;
+  width: 155px;
+  background: var(--bg-surface-alt);
+  border-radius: var(--radius-card);
   padding: 12px;
   text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.4);
+  border: 1px solid var(--border-soft);
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
 }
 
-/* ------------------------------
-   Title and Icon
---------------------------------*/
 .gauge-icon {
   font-size: 22px;
   margin-bottom: 6px;
@@ -377,15 +379,12 @@ main {
 .gauge-title {
   font-size: 14px;
   margin-bottom: 8px;
-  opacity: 0.9;
+  color: var(--text-secondary);
 }
 
-/* ------------------------------
-   Gauge SVG sizing
---------------------------------*/
 .gauge-container {
   position: relative;
-  width: 120px;   /* smaller dial */
+  width: 120px;
   height: 120px;
   margin: 0 auto;
 }
@@ -396,21 +395,19 @@ main {
   transform: rotate(-90deg);
 }
 
-/* Background circle */
 .gauge-background {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.15);
+  stroke: var(--border-soft);
   stroke-width: 12;
 }
 
-/* Progress arc */
 .gauge-progress {
   fill: none;
   stroke-width: 12;
+  stroke: var(--accent);
   transition: stroke-dashoffset 0.7s ease, stroke 0.4s ease;
 }
 
-/* Center value */
 .gauge-center-content {
   position: absolute;
   top: 50%;
@@ -422,10 +419,10 @@ main {
 .gauge-value {
   font-size: 22px;
   font-weight: bold;
+  color: var(--text-primary);
 }
 
 .gauge-unit {
   font-size: 12px;
-  opacity: 0.8;
+  color: var(--text-muted);
 }
-
