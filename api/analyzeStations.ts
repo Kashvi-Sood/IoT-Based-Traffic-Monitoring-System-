@@ -60,7 +60,8 @@ Analyze the following **live sensor data** and provide **specific, actionable mi
 Data:
 ${data}
 
-Output as a valid JSON array:
+Output as **valid JSON only** using double quotes for property names and string values.
+Format:
 [
   {
     "stationName": "Station Name",
