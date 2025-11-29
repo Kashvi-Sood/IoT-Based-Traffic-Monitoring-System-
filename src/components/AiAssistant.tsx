@@ -229,13 +229,8 @@ const AiAssistantChat: React.FC<AiAssistantChatProps> = ({ stations }) => {
                           <strong>Value:</strong> {s.value} (Threshold: {s.threshold})
                         </Typography>
                         <Typography>
-  <strong>Suggestion:</strong>{" "}
-  <span
-    dangerouslySetInnerHTML={{
-      __html: s.suggestion.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>"),
-    }}
-  />
-</Typography>
+                          <strong>Suggestion:</strong> {s.suggestion}
+                        </Typography>
                       </Box>
                     ))}
                   </Box>
